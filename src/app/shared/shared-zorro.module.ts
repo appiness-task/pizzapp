@@ -27,6 +27,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
 export const SHARED_ZORRO_MODULES = [
   NzButtonModule,
@@ -57,5 +58,6 @@ export const SHARED_ZORRO_MODULES = [
   NzAvatarModule,
   NzToolTipModule,
   NzModalModule,
-  NzInputNumberModule
+  NzInputNumberModule,
+  NzTimelineModule
 ];
