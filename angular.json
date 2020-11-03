@@ -25,10 +25,17 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "node_modules/ng-zorro-antd/src/ng-zorro-antd.min.css",
+              "node_modules/ng-zorro-antd/resizable/style/index.min.css"
             ],
             "scripts": []
           },
@@ -123,6 +130,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "pizzapp"
+    }
+  },
+  "defaultProject": "pizzapp",
+  "cli": {
+    "analytics": "331a98f9-4f5b-45fd-8d7f-7424042c480b"
+  }
 }
