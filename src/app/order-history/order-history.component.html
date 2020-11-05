@@ -1,36 +1,103 @@
-<nz-table #nzTable [nzData]="listOfData" nzTableLayout="fixed">
-    <thead>
-        <tr>
-            <th nzWidth="60px"></th>
-            <th>OrderId</th>
-            <th>Name</th>
-            <th>Mobile number</th>
-            <th>Address</th>
-            <th>Order Status</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <ng-container *ngFor="let data of nzTable.data">
+<div>
+
+    <nz-table #nzTable [nzData]="listOfData" nzTableLayout="fixed" [nzFrontPagination]="false">
+        <thead>
             <tr>
-                <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)"></td>
-                <td>{{ data.id }}</td>
-                <td>{{ data.name }}</td>
-                <td>{{ data.mobile }}</td>
-                <td>{{ data.address }}</td>
-                <td>{{ getStatus(data.order_status) }}</td>
+                <th nzWidth="60px"></th>
+                <th>OrderId</th>
+                <th>Name</th>
+                <th>Mobile number</th>
+                <th>Address</th>
+                <th>Order Status</th>
+                <th>View</th>
+                <th>Action</th>
             </tr>
-            <tr [nzExpand]="expandSet.has(data.id)">
-                <nz-timeline nzMode="alternate">
-                    <nz-timeline-item [nzDot]="dotTemplate" nzColor="green" *ngFor="let status of data.orderHistory" [nzPending]="true">
-                        {{status.date}} {{status.status}}
-                    </nz-timeline-item
-                    >
-                  </nz-timeline>
-                  <ng-template #dotTemplate>
-                    <i nz-icon nzType="clock-circle-o" style="font-size: 16px;"></i>
-                  </ng-template>
-            </tr>
-        </ng-container>
-    </tbody>
-</nz-table>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let data of nzTable.data">
+                <tr>
+                    <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+                    <td>{{ data.id }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.mobile }}</td>
+                    <td>{{ data.address }}</td>
+                    <td [style.color]="getColor(data.order_status)">{{ getStatus(data.order_status) }}</td>
+                    <td>
+                        <i nz-icon nzType="eye" nzTheme="outline" (click)="showModal(data.id)"></i>
+                    </td>
+                    <td>
+                        <i *ngIf="data.order_status <=3" nz-icon nzType="edit" nzTheme="outline"
+                            (click)="updateOrder(data)"></i>
+                    </td>
+                </tr>
+                <tr [nzExpand]="expandSet.has(data.id)">
+                    <nz-timeline nzMode="alternate">
+                        <nz-timeline-item [nzDot]="dotTemplate" nzColor="green" *ngFor="let status of data.orderHistory"
+                            [nzPending]="true">
+                            {{status.date}} {{status.status}}
+                        </nz-timeline-item>
+                    </nz-timeline>
+                    <ng-template #dotTemplate>
+                        <i nz-icon nzType="clock-circle-o" style="font-size: 16px;"></i>
+                    </ng-template>
+                </tr>
+            </ng-container>
+        </tbody>
+    </nz-table>
+
+    <nz-modal [(nzVisible)]="isVisible" nzTitle="Order Detail" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+        [nzCancelText]="'Cancel'" [nzOkText]="'Ok'" [nzOkLoading]="isOkLoading" *ngIf="orderDetail">
+
+        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+
+
+            <div nz-col class="gutter-row" [nzSpan]="12" [nzXs]="{ span: 24 }" [nzLg]="{ span: 12 }">
+                <nz-card nzTitle="Delivery Address">
+                    <p>Name : {{orderDetail?orderDetail.name:""}}</p>
+                    <p>Mobile : {{orderDetail?orderDetail.mobile:""}}</p>
+                    <p>Address : {{orderDetail?orderDetail.address:""}}</p>
+                </nz-card>
+            </div>
+
+            <div nz-col class="gutter-row" [nzSpan]="12" [nzXs]="{ span: 24 }" [nzLg]="{ span: 12 }">
+                <nz-card nzTitle="Pickup Address">
+                    <p>Shop Name : {{orderDetail?orderDetail.order_details.shopname:""}}</p>
+                    <p>Address : {{orderDetail?orderDetail.order_details.pickup_address:""}}</p>
+                </nz-card>
+            </div>
+
+        </div>
+
+        <div nz-row>
+            <nz-table #basicTable [nzData]="orderDetail.order_details.order_items" [nzFrontPagination]="false"
+                [nzSize]="middle" [nzTitle]="'Ordered Item Details'" nzTableLayout="fixed">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th> </th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of orderDetail.order_details.order_items">
+                        <td>{{ data.item_name }}</td>
+                        <td>{{ data.quantity }}</td>
+                        <td>x</td>
+                        <td>{{ data.price }}</td>
+                        <td>
+                            {{getTotalItemPrice(data.quantity,data.price)}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{orderDetail.order_details.total_amount}}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+
+        </div>
+    </nz-modal>
+
+</div>
